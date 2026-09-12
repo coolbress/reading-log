@@ -70,7 +70,8 @@ jobs:
             sleep 1
           done
           curl -sf http://localhost:8000/ > /dev/null
-          docker logs image-under-test | head -1 | grep -F '"message": "started"'
+          out="$(docker logs image-under-test)"
+          printf '%s\n' "$out" | head -1 | grep -F '"message": "started"'
 
 # Optional: a review signal from a third party on every ready pull request,
 # reported as the check `third-party / review`. Off by default: it needs a
