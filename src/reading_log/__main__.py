@@ -1,13 +1,9 @@
 """The container's entry point: `python -m <package>`, what the Dockerfile's CMD runs.
 
-No framework is chosen here; what serves the application is this project's
-decision, and a `uvicorn` or `flask` planted here would be a stub in every
-project that does not use it. Replace the body of `main()` when a server
-arrives; the logging setup can stay.
-
-Logs are one JSON object per line on stdout, so a container's output is
-collected as is. Standard library only. Metrics, traces and SLOs live outside
-the repository, in whatever the deployment uses.
+Serves `app` over uvicorn. Logs are one JSON object per line on stdout, so a
+container's output is collected as is. `log_config=None` keeps uvicorn's own
+loggers on this same root handler instead of uvicorn's default (colored,
+non-JSON) console formatting.
 """
 
 from __future__ import annotations
@@ -17,7 +13,9 @@ import logging
 import sys
 from typing import Any
 
-from . import greet
+import uvicorn
+
+from .app import app
 
 # The fields every LogRecord carries. Anything else came in through
 # `logger.info("...", extra={...})` and is kept: context in fields is the
@@ -53,7 +51,8 @@ def configure(level: int = logging.INFO) -> None:
 
 def main() -> None:
     configure()
-    logging.getLogger(__package__).info("started", extra={"greeting": greet("world")})
+    logging.getLogger(__package__).info("started")
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_config=None)  # noqa: S104
 
 
 if __name__ == "__main__":

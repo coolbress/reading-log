@@ -57,14 +57,20 @@ jobs:
         with:
           persist-credentials: false   # nothing here pushes
       - run: docker build -t image-under-test .
-      # No framework is chosen yet, so the entry point has no port: the one
-      # request is a run to completion, answered by its first log line. When a
-      # server arrives, start the container with `-d -p` and `curl` it here.
-      - name: Run the image and read its first log line
+      # The server arrived: start the container in the background, wait for it
+      # to answer, then read its first log line the same way the run-to-completion
+      # version did.
+      - name: Run the image and curl it
         run: |
           set -euo pipefail
-          out="$(docker run --rm image-under-test)"
-          printf '%s\n' "$out" | head -1 | grep -F '"message": "started"'
+          docker run -d --rm --name image-under-test -p 8000:8000 image-under-test
+          trap 'docker logs image-under-test; docker stop image-under-test' EXIT
+          for _ in $(seq 1 30); do
+            curl -sf http://localhost:8000/ > /dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:8000/ > /dev/null
+          docker logs image-under-test | head -1 | grep -F '"message": "started"'
 
 # Optional: a review signal from a third party on every ready pull request,
 # reported as the check `third-party / review`. Off by default: it needs a

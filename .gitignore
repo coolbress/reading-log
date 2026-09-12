@@ -5,6 +5,9 @@ __pycache__/
 dist/
 *.egg-info/
 
+# The reading log's local SQLite file (DATABASE_URL default)
+reading_log.db
+
 # Tool caches
 .pytest_cache/
 .mypy_cache/

@@ -7,7 +7,12 @@ requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "coolbress" }]
-dependencies = []
+dependencies = [
+    "fastapi>=0.141.1",
+    "jinja2>=3.1.6",
+    "python-multipart>=0.0.32",
+    "uvicorn[standard]>=0.52.4",
+]
 
 # Distribution metadata. Read by `pip show`, GitHub and the dependency graph
 # even when the package is never uploaded.
@@ -21,6 +26,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "httpx2>=2.12.0",
     "mypy>=1.14",
     "pytest>=8.3",
     "ruff>=0.9",
@@ -34,6 +40,11 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "S", "A", "C4", "PT", "SIM", "RUF"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's parameter-default calls (`Form(...)`, `Depends(...)`) are read by
+# FastAPI itself at request time; they are not the mutable-default footgun B008 checks for.
+extend-immutable-calls = ["fastapi.Form"]
 
 [tool.ruff.lint.per-file-ignores]
 # assert is the normal form in tests
@@ -54,4 +65,9 @@ testpaths = ["tests"]
 addopts = ["--strict-markers", "--strict-config"]
 # Warnings are errors. A third-party warning that blocks gets one narrow
 # ignore here, with its reason.
-filterwarnings = ["error"]
+filterwarnings = [
+    "error",
+    # starlette.testclient imports anyio.abc.BlockingPortal, a name anyio kept
+    # only as a deprecated alias; ours to drop once starlette imports the new one.
+    "ignore:The anyio\\.abc\\.BlockingPortal alias is deprecated.*:DeprecationWarning:starlette.testclient",
+]
