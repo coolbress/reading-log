@@ -25,3 +25,7 @@ reading_log.db
 # Claude Code adds this file to the global git excludes of one machine, which
 # protects that machine and not the repository.
 .claude/settings.local.json
+
+# The impeccable design skill's local session state (working config, hook
+# cache, review screenshots). DESIGN.md is the durable record; this is not.
+.impeccable/
