@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reading log</title>
+  <style>
+    body {
+      margin: 0;
+      background: #241e1a;
+      color: #efe6d3;
+      font: 1rem -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    main { max-width: 38rem; margin: 0 auto; }
+    h1 {
+      font: 500 2.25rem Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+      margin: 0 0 0.25rem;
+    }
+    .tagline { color: #c7b896; margin: 0 0 2.5rem; }
+    section + section { margin-top: 2.5rem; }
+    .section-label { color: #c7b896; margin: 0 0 0.9rem; }
+    form {
+      background: #2f2620;
+      border: 1px solid #4a3e33;
+      border-radius: 4px;
+      padding: 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+    label { display: block; font-size: 0.9rem; color: #c7b896; margin-bottom: 0.35rem; }
+    input {
+      width: 100%;
+      background: #241e1a;
+      border: 1px solid #4a3e33;
+      border-radius: 3px;
+      color: #efe6d3;
+      font: inherit;
+      padding: 0.55rem 0.65rem;
+    }
+    input:focus-visible { outline: 2px solid #cb9a3c; }
+    button {
+      justify-self: start;
+      background: #cb9a3c;
+      color: #241e1a;
+      border: none;
+      border-radius: 3px;
+      font: inherit;
+      font-weight: 600;
+      padding: 0.6rem 1.4rem;
+      cursor: pointer;
+    }
+    .entries { list-style: none; margin: 0; padding: 0; }
+    .entry { padding: 1rem 0; border-top: 1px solid #4a3e33; }
+    .entry-date { font-size: 0.85rem; color: #c7b896; margin: 0 0 0.2rem; }
+    .entry-title { font-family: Georgia, "Iowan Old Style", serif; font-size: 1.2rem; margin: 0; }
+    .entry-author { color: #c7b896; margin: 0.15rem 0 0; }
+    .empty { border-top: 1px solid #4a3e33; padding: 1.5rem 0 0; color: #c7b896; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Reading log</h1>
+    <p class="tagline">A record of the books you've finished.</p>
+
+    <section>
+      <p class="section-label">Add a book</p>
+      <form method="post" action="/books">
+        <div>
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" required>
+        </div>
+        <div>
+          <label for="author">Author</label>
+          <input type="text" id="author" name="author" required>
+        </div>
+        <div>
+          <label for="finished_on">Finished on</label>
+          <input type="date" id="finished_on" name="finished_on" required>
+        </div>
+        <button type="submit">Log it</button>
+      </form>
+    </section>
+
+    <section>
+      <p class="section-label">Finished</p>
+      {% if books %}
+      <ul class="entries">
+        {% for book in books %}
+        <li class="entry">
+          <p class="entry-date">{{ book.finished_on }}</p>
+          <p class="entry-title">{{ book.title }}</p>
+          <p class="entry-author">{{ book.author }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="empty">No books yet — log the first one above.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>

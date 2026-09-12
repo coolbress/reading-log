@@ -26,6 +26,9 @@ FROM python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1
 # Not root: a container escape reaches less.
 RUN useradd --create-home --uid 10001 app
 WORKDIR /app
+# WORKDIR runs as root and would otherwise leave /app root-owned; the app
+# writes its SQLite file here (DATABASE_URL, default reading_log.db).
+RUN chown app:app /app
 
 COPY --from=build --chown=app:app /app/.venv /app/.venv
 COPY --from=build --chown=app:app /app/src /app/src
@@ -33,5 +36,5 @@ ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1
 
 USER app
 
-# The entry point is this package's __main__.py. No framework is chosen here.
+# The entry point is this package's __main__.py: reading_log.app under uvicorn.
 CMD ["python", "-m", "reading_log"]
