@@ -38,3 +38,11 @@ protected; a change lands as a pull request with green checks.
 
 Created from [`coolbress/plinth-template`](https://github.com/coolbress/plinth-template).
 The CI checks come from [`coolbress/plinth`](https://github.com/coolbress/plinth).
+
+## First day
+
+- If the merge stays blocked on CodeQL, push once more: `git commit --allow-empty -m 'ci: trigger code scanning' && git push`.
+- If your everyday gh token is fine-grained with selected repositories, add `reading-log` to it: https://github.com/settings/personal-access-tokens
+- Dependabot opens pull requests from the first minute, and the wall treats them like any other: merge one when every required check is green, or close it.
+
+Made with [plinth](https://github.com/coolbress/plinth).
