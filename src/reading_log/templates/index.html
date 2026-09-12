@@ -7,22 +7,32 @@
   <title>Reading log</title>
   <style>
     :root {
-      --bg: #f2f4f1;
-      --text: #171a18;
-      --text-muted: #545b56;
-      --border: #d7dbd4;
-      --accent: #1f5c46;
-      --accent-text: #f2f4f1;
+      --cover-bg: #1b2540;
+      --cover-fg: #f3efe4;
+      --cover-fg-muted: #a9a493;
+      --page-bg: #f3efe4;
+      --ink: #1c1f2e;
+      --ink-muted: #5b5445;
+      --rule: #d9cfb8;
+      --gold: #7c5e22;
+      --gold-strong: #8a6a1f;
+      --button-fg: #f8f4e9;
+      --focus-on-page: #1b2540;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #14171a;
-        --text: #eef1ee;
-        --text-muted: #a5aea8;
-        --border: #2c3330;
-        --accent: #62b191;
-        --accent-text: #0f1210;
+        --cover-bg: #0d0f18;
+        --cover-fg: #ece6d4;
+        --cover-fg-muted: #8f8a78;
+        --page-bg: #241f2b;
+        --ink: #ece6d4;
+        --ink-muted: #a89f8a;
+        --rule: #3a3446;
+        --gold: #d9ab52;
+        --gold-strong: #e6bd6c;
+        --button-fg: #1c1720;
+        --focus-on-page: #d9ab52;
       }
     }
 
@@ -30,187 +40,256 @@
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
+      background: var(--page-bg);
+      color: var(--ink);
       font: 400 1rem/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding: 3.5rem 1.5rem 5rem;
+      font-variant-numeric: tabular-nums;
     }
 
-    .wrap { max-width: 52rem; margin: 0 auto; }
+    ::selection { background: var(--gold-strong); color: var(--cover-bg); }
 
-    header { margin-bottom: 3.5rem; }
+    .passbook { max-width: 40rem; margin: 0 auto; min-height: 100vh; }
 
-    h1 {
-      font-size: 1.6rem;
+    /* -- cover: the embossed spine of the passbook -- */
+
+    .cover {
+      background: var(--cover-bg);
+      color: var(--cover-fg);
+      padding: 2.75rem 1.5rem 3.25rem;
+      position: relative;
+    }
+
+    .cover::after {
+      /* the torn perforation where the deposit slip tears away from the cover */
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -0.5rem;
+      height: 1rem;
+      background-image: radial-gradient(circle at 50% 0, var(--page-bg) 0.28rem, transparent 0.29rem);
+      background-size: 1.1rem 1rem;
+      background-repeat: repeat-x;
+      background-position: 0.55rem 0;
+    }
+
+    .cover h1 {
+      margin: 0;
+      font-size: 1.9rem;
       font-weight: 700;
       letter-spacing: -0.01em;
-      margin: 0 0 0.4rem;
     }
 
-    .tagline { color: var(--text-muted); margin: 0; }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
+    .cover-tally {
+      margin: 0.6rem 0 0;
+      font-size: 0.85rem;
+      color: var(--cover-fg-muted);
+      font-variant-numeric: tabular-nums;
     }
 
-    @media (min-width: 760px) {
-      .layout { grid-template-columns: 18rem 1fr; align-items: start; }
-    }
+    /* -- deposit slip: the add-a-book form -- */
 
-    h2 {
-      font-size: 0.95rem;
+    .ledger-body { padding: 2.75rem 1.5rem 4.5rem; }
+
+    .deposit-slip { margin-bottom: 3.5rem; }
+
+    .deposit-slip h2 {
+      margin: 0 0 1.4rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      margin: 0 0 1.25rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
     }
 
-    .add-form { display: grid; gap: 1.4rem; }
+    .slip-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.3rem; }
 
-    .field { display: grid; gap: 0.4rem; }
+    .slip-field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.35rem; }
 
-    .field label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .slip-field label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
     }
 
-    .field input {
+    .slip-field input {
       width: 100%;
       background: transparent;
       border: none;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--rule);
       border-radius: 0;
-      color: var(--text);
+      color: var(--ink);
       font: inherit;
       font-size: 1rem;
-      padding: 0.35rem 0.1rem;
+      padding: 0.4rem 0.1rem;
     }
 
-    .field input:focus-visible {
+    .slip-field input:focus-visible {
       outline: none;
-      border-bottom-color: var(--accent);
+      border-bottom-color: var(--gold-strong);
       border-bottom-width: 2px;
     }
 
     button {
       justify-self: start;
-      background: var(--accent);
-      color: var(--accent-text);
+      background: var(--gold-strong);
+      color: var(--button-fg);
       border: none;
-      border-radius: 3px;
+      border-radius: 2px;
       font: inherit;
-      font-weight: 600;
-      font-size: 0.95rem;
-      padding: 0.65rem 1.5rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.6rem;
       cursor: pointer;
       transition: transform 0.15s ease;
-      margin-top: 0.3rem;
+      margin-top: 0.2rem;
     }
 
     button:hover { opacity: 0.92; }
     button:active { transform: scale(0.97); }
-    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    button:focus-visible { outline: 2px solid var(--focus-on-page); outline-offset: 3px; }
 
     @media (prefers-reduced-motion: reduce) {
       button { transition: none; }
     }
 
-    .log-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 0.5rem;
-    }
+    /* -- ledger: the running record -- */
 
-    .log-head h2 { margin: 0; }
-
-    .log-count { font-size: 0.85rem; color: var(--text-muted); }
-
-    .log-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .log-row {
+    .ledger-head,
+    .ledger-row {
       display: grid;
-      grid-template-columns: 6rem 1fr;
+      grid-template-columns: 2.75rem 5.5rem minmax(0, 1fr);
       gap: 1rem;
-      padding: 1.1rem 0;
+      align-items: start;
     }
 
-    .log-row + .log-row { border-top: 1px solid var(--border); }
+    .ledger-row > * { min-width: 0; }
 
-    .log-date {
-      font-variant-numeric: tabular-nums;
+    .entry-title,
+    .entry-author { overflow-wrap: break-word; }
+
+    .ledger-head {
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .ledger-rows { list-style: none; margin: 0; padding: 0; }
+
+    .ledger-row {
+      padding: 1.05rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .col-no {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
       font-size: 0.85rem;
-      color: var(--text-muted);
-      padding-top: 0.15rem;
+      color: var(--gold);
+      padding-top: 0.05rem;
     }
 
-    .log-title { margin: 0; font-weight: 600; }
-    .log-author { margin: 0.2rem 0 0; color: var(--text-muted); font-size: 0.92rem; }
+    .col-date {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      padding-top: 0.08rem;
+    }
 
-    .log-empty {
-      border-top: 1px solid var(--border);
-      padding: 1.5rem 0 0;
-      color: var(--text-muted);
+    .entry-title { margin: 0; font-weight: 600; }
+    .entry-author { margin: 0.2rem 0 0; color: var(--ink-muted); font-size: 0.92rem; }
+
+    .ledger-row.is-new {
+      animation: stamp-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+    }
+
+    @keyframes stamp-in {
+      from {
+        opacity: 0;
+        transform: scale(1.06) rotate(-1.2deg);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ledger-row.is-new { animation: none; }
+    }
+
+    .ledger-empty {
+      padding: 1.6rem 0 0;
+      color: var(--ink-muted);
+    }
+
+    /* stitched binding along the ledger's left edge, wide screens only */
+    @media (min-width: 640px) {
+      .ledger {
+        padding-left: 1.25rem;
+        border-left: 1px dashed var(--rule);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Reading log</h1>
-      <p class="tagline">Every book you've finished, in order.</p>
+  <div class="passbook">
+    <header class="cover">
+      <h1>Reading Log</h1>
+      <p class="cover-tally">{{ books|length }} {{ "entry" if books|length == 1 else "entries" }} on record</p>
     </header>
 
-    <div class="layout">
-      <section class="add-section">
-        <h2>Add a book</h2>
-        <form class="add-form" method="post" action="/books">
-          <div class="field">
+    <main class="ledger-body">
+      <section class="deposit-slip">
+        <h2>New entry</h2>
+        <form class="slip-form" method="post" action="/books">
+          <div class="slip-field">
             <label for="title">Title</label>
             <input type="text" id="title" name="title" required>
           </div>
-          <div class="field">
+          <div class="slip-field">
             <label for="author">Author</label>
             <input type="text" id="author" name="author" required>
           </div>
-          <div class="field">
+          <div class="slip-field">
             <label for="finished_on">Finished on</label>
             <input type="date" id="finished_on" name="finished_on" required>
           </div>
-          <button type="submit">Log it</button>
+          <button type="submit">Stamp it in</button>
         </form>
       </section>
 
-      <section class="log-section">
-        <div class="log-head">
-          <h2>Finished</h2>
-          {% if books %}
-          <span class="log-count">{{ books|length }} {{ "book" if books|length == 1 else "books" }}</span>
-          {% endif %}
-        </div>
+      <section class="ledger">
         {% if books %}
-        <ul class="log-list">
+        <div class="ledger-head">
+          <span>No.</span>
+          <span>Date</span>
+          <span>Entry</span>
+        </div>
+        <ol class="ledger-rows">
           {% for book in books %}
-          <li class="log-row">
-            <time class="log-date">{{ book.finished_on }}</time>
+          <li class="ledger-row{% if loop.first %} is-new{% endif %}">
+            <span class="col-no">{{ "%03d"|format(books|length - loop.index0) }}</span>
+            <time class="col-date">{{ book.finished_on }}</time>
             <div>
-              <p class="log-title">{{ book.title }}</p>
-              <p class="log-author">{{ book.author }}</p>
+              <p class="entry-title">{{ book.title }}</p>
+              <p class="entry-author">{{ book.author }}</p>
             </div>
           </li>
           {% endfor %}
-        </ul>
+        </ol>
         {% else %}
-        <p class="log-empty">No books yet. Log the first one to start your record.</p>
+        <p class="ledger-empty">No entries yet. Log the first one above.</p>
         {% endif %}
       </section>
-    </div>
+    </main>
   </div>
 </body>
 </html>

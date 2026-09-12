@@ -19,7 +19,7 @@ def test_empty_state_invites_the_first_entry(client: TestClient) -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "No books yet" in response.text
+    assert "No entries yet" in response.text
 
 
 def test_recording_a_book_puts_it_in_the_list(client: TestClient) -> None:
@@ -44,7 +44,7 @@ def test_empty_title_is_rejected_and_nothing_is_recorded(client: TestClient) -> 
     )
 
     assert response.status_code == 422
-    assert "No books yet" in client.get("/").text
+    assert "No entries yet" in client.get("/").text
 
 
 def test_a_book_recorded_late_still_sorts_by_when_it_was_finished(client: TestClient) -> None:
