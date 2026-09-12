@@ -40,10 +40,10 @@ def add_book(conn: sqlite3.Connection, *, title: str, author: str, finished_on: 
 
 def list_books(conn: sqlite3.Connection) -> list[Book]:
     """Recorded books, most recently finished first."""
-    # Rows are appended as books are finished, so the row id already carries
-    # the order; sorting on the text column as well only makes SQLite compare
-    # strings for the same result.
+    # A book can be recorded after one that finished more recently (a
+    # backfilled entry), so the row id alone does not track finish order;
+    # finished_on is the real key, id only breaks ties within the same day.
     rows = conn.execute(
-        "SELECT id, title, author, finished_on FROM books ORDER BY id DESC"
+        "SELECT id, title, author, finished_on FROM books ORDER BY finished_on DESC, id DESC"
     ).fetchall()
     return [Book(id=row[0], title=row[1], author=row[2], finished_on=row[3]) for row in rows]

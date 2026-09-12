@@ -47,6 +47,25 @@ def test_empty_title_is_rejected_and_nothing_is_recorded(client: TestClient) -> 
     assert "No books yet" in client.get("/").text
 
 
+def test_a_book_recorded_late_still_sorts_by_when_it_was_finished(client: TestClient) -> None:
+    client.post(
+        "/books",
+        data={"title": "Educated", "author": "Tara Westover", "finished_on": "2026-01-01"},
+    )
+    client.post(
+        "/books",
+        data={
+            "title": "Klara and the Sun",
+            "author": "Kazuo Ishiguro",
+            "finished_on": "2025-12-01",
+        },
+    )
+
+    response = client.get("/")
+
+    assert response.text.index("Educated") < response.text.index("Klara and the Sun")
+
+
 def test_a_book_is_stored_in_the_database_file_not_in_memory(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
