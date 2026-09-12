@@ -3,101 +3,214 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>Reading log</title>
   <style>
+    :root {
+      --bg: #f2f4f1;
+      --text: #171a18;
+      --text-muted: #545b56;
+      --border: #d7dbd4;
+      --accent: #1f5c46;
+      --accent-text: #f2f4f1;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #14171a;
+        --text: #eef1ee;
+        --text-muted: #a5aea8;
+        --border: #2c3330;
+        --accent: #62b191;
+        --accent-text: #0f1210;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      background: #241e1a;
-      color: #efe6d3;
-      font: 1rem -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 2.5rem 1.25rem 4rem;
+      background: var(--bg);
+      color: var(--text);
+      font: 400 1rem/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 3.5rem 1.5rem 5rem;
     }
-    main { max-width: 38rem; margin: 0 auto; }
+
+    .wrap { max-width: 52rem; margin: 0 auto; }
+
+    header { margin-bottom: 3.5rem; }
+
     h1 {
-      font: 500 2.25rem Georgia, "Iowan Old Style", "Palatino Linotype", serif;
-      margin: 0 0 0.25rem;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0 0 0.4rem;
     }
-    .tagline { color: #c7b896; margin: 0 0 2.5rem; }
-    section + section { margin-top: 2.5rem; }
-    .section-label { color: #c7b896; margin: 0 0 0.9rem; }
-    form {
-      background: #2f2620;
-      border: 1px solid #4a3e33;
-      border-radius: 4px;
-      padding: 1.5rem;
+
+    .tagline { color: var(--text-muted); margin: 0; }
+
+    .layout {
       display: grid;
-      gap: 1rem;
+      grid-template-columns: 1fr;
+      gap: 3rem;
     }
-    label { display: block; font-size: 0.9rem; color: #c7b896; margin-bottom: 0.35rem; }
-    input {
+
+    @media (min-width: 760px) {
+      .layout { grid-template-columns: 18rem 1fr; align-items: start; }
+    }
+
+    h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 1.25rem;
+    }
+
+    .add-form { display: grid; gap: 1.4rem; }
+
+    .field { display: grid; gap: 0.4rem; }
+
+    .field label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .field input {
       width: 100%;
-      background: #241e1a;
-      border: 1px solid #4a3e33;
-      border-radius: 3px;
-      color: #efe6d3;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      color: var(--text);
       font: inherit;
-      padding: 0.55rem 0.65rem;
+      font-size: 1rem;
+      padding: 0.35rem 0.1rem;
     }
-    input:focus-visible { outline: 2px solid #cb9a3c; }
+
+    .field input:focus-visible {
+      outline: none;
+      border-bottom-color: var(--accent);
+      border-bottom-width: 2px;
+    }
+
     button {
       justify-self: start;
-      background: #cb9a3c;
-      color: #241e1a;
+      background: var(--accent);
+      color: var(--accent-text);
       border: none;
       border-radius: 3px;
       font: inherit;
       font-weight: 600;
-      padding: 0.6rem 1.4rem;
+      font-size: 0.95rem;
+      padding: 0.65rem 1.5rem;
       cursor: pointer;
+      transition: transform 0.15s ease;
+      margin-top: 0.3rem;
     }
-    .entries { list-style: none; margin: 0; padding: 0; }
-    .entry { padding: 1rem 0; border-top: 1px solid #4a3e33; }
-    .entry-date { font-size: 0.85rem; color: #c7b896; margin: 0 0 0.2rem; }
-    .entry-title { font-family: Georgia, "Iowan Old Style", serif; font-size: 1.2rem; margin: 0; }
-    .entry-author { color: #c7b896; margin: 0.15rem 0 0; }
-    .empty { border-top: 1px solid #4a3e33; padding: 1.5rem 0 0; color: #c7b896; }
+
+    button:hover { opacity: 0.92; }
+    button:active { transform: scale(0.97); }
+    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      button { transition: none; }
+    }
+
+    .log-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .log-head h2 { margin: 0; }
+
+    .log-count { font-size: 0.85rem; color: var(--text-muted); }
+
+    .log-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .log-row {
+      display: grid;
+      grid-template-columns: 6rem 1fr;
+      gap: 1rem;
+      padding: 1.1rem 0;
+    }
+
+    .log-row + .log-row { border-top: 1px solid var(--border); }
+
+    .log-date {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding-top: 0.15rem;
+    }
+
+    .log-title { margin: 0; font-weight: 600; }
+    .log-author { margin: 0.2rem 0 0; color: var(--text-muted); font-size: 0.92rem; }
+
+    .log-empty {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 0 0;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
-  <main>
-    <h1>Reading log</h1>
-    <p class="tagline">A record of the books you've finished.</p>
+  <div class="wrap">
+    <header>
+      <h1>Reading log</h1>
+      <p class="tagline">Every book you've finished, in order.</p>
+    </header>
 
-    <section>
-      <p class="section-label">Add a book</p>
-      <form method="post" action="/books">
-        <div>
-          <label for="title">Title</label>
-          <input type="text" id="title" name="title" required>
-        </div>
-        <div>
-          <label for="author">Author</label>
-          <input type="text" id="author" name="author" required>
-        </div>
-        <div>
-          <label for="finished_on">Finished on</label>
-          <input type="date" id="finished_on" name="finished_on" required>
-        </div>
-        <button type="submit">Log it</button>
-      </form>
-    </section>
+    <div class="layout">
+      <section class="add-section">
+        <h2>Add a book</h2>
+        <form class="add-form" method="post" action="/books">
+          <div class="field">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+          <div class="field">
+            <label for="author">Author</label>
+            <input type="text" id="author" name="author" required>
+          </div>
+          <div class="field">
+            <label for="finished_on">Finished on</label>
+            <input type="date" id="finished_on" name="finished_on" required>
+          </div>
+          <button type="submit">Log it</button>
+        </form>
+      </section>
 
-    <section>
-      <p class="section-label">Finished</p>
-      {% if books %}
-      <ul class="entries">
-        {% for book in books %}
-        <li class="entry">
-          <p class="entry-date">{{ book.finished_on }}</p>
-          <p class="entry-title">{{ book.title }}</p>
-          <p class="entry-author">{{ book.author }}</p>
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p class="empty">No books yet — log the first one above.</p>
-      {% endif %}
-    </section>
-  </main>
+      <section class="log-section">
+        <div class="log-head">
+          <h2>Finished</h2>
+          {% if books %}
+          <span class="log-count">{{ books|length }} {{ "book" if books|length == 1 else "books" }}</span>
+          {% endif %}
+        </div>
+        {% if books %}
+        <ul class="log-list">
+          {% for book in books %}
+          <li class="log-row">
+            <time class="log-date">{{ book.finished_on }}</time>
+            <div>
+              <p class="log-title">{{ book.title }}</p>
+              <p class="log-author">{{ book.author }}</p>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="log-empty">No books yet. Log the first one to start your record.</p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
 </body>
 </html>
