@@ -1,0 +1,12 @@
+# Written by copier. Do not edit by hand.
+#
+# This file records which version of the template this repository came from,
+# so that `copier update` can merge only the template changes made since.
+# Deleting it turns the repository back into a point-in-time copy.
+_commit: v1.4.0
+_src_path: gh:coolbress/plinth-template
+archetype: backend
+license: MIT
+owner: coolbress
+project_name: reading-log
+
